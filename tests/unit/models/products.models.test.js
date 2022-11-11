@@ -55,4 +55,19 @@ describe('Testes de unidade do productsModel', function () {
       expect(response).to.deep.equal({ id: 1, name: 'Martelo de Thor' });
     });
   });
+
+  describe('Testa a rota cadastrar um novo produto', function () {
+    before(async function () {
+      sinon.stub(connection, 'execute').resolves([{ insertId: 5 }]);
+    });
+
+    after(async function () {
+      connection.execute.restore();
+    });
+
+    it('Testa se é retornado com sucesso', async function () {
+      const response = await productsModel.insertProduct();
+      expect(response).to.deep.equal(5);
+    });
+  });
 });

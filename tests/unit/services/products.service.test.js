@@ -56,4 +56,20 @@ describe('Testes de unidade do productsService', function () {
       });
     });
   });
+
+  describe('Testa a rota cadastrar um novo produto', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa se é retornado corretamnete', async function () {
+      sinon.stub(productsModel, 'insertProduct').resolves(5);
+
+      const response = await productsService.createProduct('produtoX');
+
+      expect(response).to.deep.equal({
+        message: { id: 5, name: 'produtoX' },
+      });
+    });
+  });
 });

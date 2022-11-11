@@ -79,4 +79,83 @@ describe('Testes de unidade do productsController', function () {
       expect(res.json).to.have.been.calledWith(expectResponseGetById);
     });
   });
+
+  describe('Testa a rota cadastrar um novo produto', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa se é retornado tudo corretamente', async function () {
+      const res = {};
+      const req = {
+        body: {
+          name: 'produtoX',
+        },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(productsService, 'createProduct')
+      .resolves({
+        message: {
+          id: 4,
+          name: 'produtoX',
+        },
+      });
+
+      await productsController.create(req, res);
+
+      expect(res.status).to.have.been.calledWith(201);
+      expect(res.json).to.have.been.calledWith({
+        id: 4,
+        name: 'produtoX',
+      });
+    });
+
+    it('Testa se é retornado erro ao não passar um nome', async function () {
+      const res = {};
+      const req = {
+        body: {},
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(productsService, 'createProduct')
+      .resolves({
+        message: '\"name\" is required',
+      });
+
+      await productsController.create(req, res);
+
+      // expect(res.status).to.have.been.calledWith(400);
+      expect(res.json).to.have.been.calledWith('\"name\" is required');
+    });
+
+    it('Testa se é retornado erro ao passar um nome invalido', async function () {
+      const res = {};
+      const req = {
+        body: {
+          name: 'prod'
+        },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(productsService, 'createProduct')
+      .resolves({
+        message: '\"name\" length must be at least 5 characters long',
+      });
+
+      await productsController.create(req, res);
+
+      // expect(res.status).to.have.been.calledWith(422);
+      expect(res.json).to.have.been.calledWith('\"name\" length must be at least 5 characters long');
+    });
+  });
 });
