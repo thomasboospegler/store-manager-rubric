@@ -17,6 +17,7 @@ describe('Testes de unidade do productsService', function () {
       const response = await productsService.getAllProducts();
 
       expect(response).to.deep.equal({
+        type: null,
         message: [
           { id: 1, name: 'Martelo de Thor' },
           { id: 2, name: 'Traje de encolhimento' },
@@ -37,7 +38,8 @@ describe('Testes de unidade do productsService', function () {
       const response = await productsService.getProductById(5);
 
       expect(response).to.deep.equal({
-        message: undefined,
+        type: 'NOT_FOUND',
+        message: 'Product not found',
       });
     });
 
@@ -50,6 +52,7 @@ describe('Testes de unidade do productsService', function () {
       const response = await productsService.getProductById(1);
   
       expect(response).to.deep.equal({
+        type: null,
         message: [
           { id: 1, name: 'Martelo de Thor' },
         ],
@@ -64,11 +67,24 @@ describe('Testes de unidade do productsService', function () {
 
     it('Testa se é retornado corretamnete', async function () {
       sinon.stub(productsModel, 'insertProduct').resolves(5);
+      sinon.stub(productsModel, 'getProductById').resolves([
+        { id: 5, name: 'produtoX' },
+      ]);
 
       const response = await productsService.createProduct('produtoX');
 
       expect(response).to.deep.equal({
-        message: { id: 5, name: 'produtoX' },
+        type: null,
+        message: [{ id: 5, name: 'produtoX' }],
+      });
+    });
+
+    it('Testa se é retornado erro ao pasar um nome invalido', async function () {
+      const response = await productsService.createProduct('pro');
+
+      expect(response).to.deep.equal({
+        type: 'INVALID_VALUE',
+        message: '"name" length must be at least 5 characters long',
       });
     });
   });
