@@ -2,6 +2,17 @@ const salesModel = require('../models/sales.model');
 const productsModel = require('../models/products.model');
 const { validateCreateSaleValues } = require('./validations/validationsSalesValues');
 
+const getAllSales = async () => {
+  const result = await salesModel.getAllSales();
+  return { type: null, message: result };
+};
+
+const getSaleById = async (productID) => {
+  const result = await salesModel.getSaleById(productID);
+  if (result.length === 0) return { type: 'NOT_FOUND', message: 'Sale not found' };
+  return { type: null, message: result };
+};
+
 const createSale = async (reqBody) => {
   const allProducts = await productsModel.getAllProducts();
 
@@ -30,4 +41,6 @@ const createSale = async (reqBody) => {
 
 module.exports = {
   createSale,
+  getAllSales,
+  getSaleById,
 };
