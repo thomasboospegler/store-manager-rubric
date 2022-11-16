@@ -21,8 +21,17 @@ const createProduct = async (name) => {
   return { type: null, message: newProduct };
 };
 
+const editProduct = async (product) => {
+  const error = validateCreateProductValues(product.name);
+  if (error.type) return error;
+
+  const result = await productsModel.editProduct(product);
+  return { type: null, message: result };
+};
+
 module.exports = {
   getAllProducts,
   getProductById,
   createProduct,
+  editProduct,
 };
