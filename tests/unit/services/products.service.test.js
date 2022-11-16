@@ -112,4 +112,17 @@ describe('Testes de unidade do productsService', function () {
       });
     });
   });
+
+  describe('Testa a rota de deletar um produto', function () {
+    it('Testa se é retornado corretamnete', async function () {
+      sinon.stub(productsModel, 'deleteProduct').resolves(1);
+
+      const response = await productsService.deleteProduct(1);
+
+      expect(response).to.deep.equal({
+        type: null,
+        message: 'Product with id: 1 deleted sucefully',
+      });
+    });
+  });
 });
