@@ -112,27 +112,6 @@ describe('Testes de unidade do productsController', function () {
       });
     });
 
-    // it('Testa se é retornado erro ao não passar um nome', async function () {
-    //   const res = {};
-    //   const req = {
-    //     body: {},
-    //   };
-
-    //   res.status = sinon.stub().returns(res);
-    //   res.json = sinon.stub().returns();
-
-    //   sinon
-    //   .stub(productsService, 'createProduct')
-    //   .resolves({
-    //     message: '\"name\" is required',
-    //   });
-
-    //   await productsController.create(req, res);
-
-    //   expect(res.status).to.have.been.calledWith(400);
-    //   expect(res.json).to.have.been.calledWith('\"name\" is required');
-    // });
-
     it('Testa se é retornado erro ao passar um nome invalido', async function () {
       const res = {};
       const req = {
@@ -154,6 +133,101 @@ describe('Testes de unidade do productsController', function () {
       expect(res.status).to.have.been.calledWith(422);
       expect(res.json).to.have.been.calledWith(
         { message: '\"name\" length must be at least 5 characters long'});
+    });
+  });
+
+  describe('Testa a rota de editar um produto', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa se é retornado erro ao passar um nome invalido', async function () {
+      const res = {};
+      const req = {
+        params: 1,
+        body: {
+          name: 'prod'
+        },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(productsService, 'getProductById')
+      .resolves({});
+
+      sinon
+      .stub(productsService, 'editProduct')
+      .resolves({ type: 'INVALID_VALUE',
+      message: '"name" length must be at least 5 characters long' });
+
+      await productsController.edit(req, res);
+
+      expect(res.status).to.have.been.calledWith(422);
+      expect(res.json).to.have.been.calledWith(
+        { message: '\"name\" length must be at least 5 characters long'});
+    });
+
+    it('Testa se é retornado tudo corretamente', async function () {
+      const res = {};
+      const req = {
+        params: 1,
+        body: {
+          name: 'Martelo do Batman'
+        },
+      };
+  
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+  
+      sinon
+      .stub(productsService, 'getProductById')
+      .resolves({});
+  
+      sinon
+      .stub(productsService, 'editProduct')
+      .resolves({ type: null,
+        message: {
+          id: 1,
+          name: 'Martelo do Batman',
+        } 
+      });
+  
+      await productsController.edit(req, res);
+  
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith({
+        id: 1,
+        name: 'Martelo do Batman',
+      });
+    });
+
+    it('Testa se é retornado erro ao passar um id não existente', async function () {
+      const res = {};
+      const req = {
+        params: 10,
+        body: {
+          name: 'prod'
+        },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(productsService, 'getProductById')
+      .resolves({ type: 'NOT_FOUND', message: 'Product not found' });
+
+      sinon
+      .stub(productsService, 'editProduct')
+      .resolves({});
+
+      await productsController.edit(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith(
+        { message: 'Product not found'});
     });
   });
 });

@@ -88,4 +88,28 @@ describe('Testes de unidade do productsService', function () {
       });
     });
   });
+
+  describe('Testa a rota de editar um produto', function () {
+    it('Testa se é retornado erro ao pasar um nome invalido', async function () {
+      const response = await productsService.editProduct('pro');
+
+      expect(response).to.deep.equal({
+        type: 'INVALID_VALUE',
+        message: '"name" length must be at least 5 characters long',
+      });
+    });
+
+    it('Testa se é retornado corretamnete', async function () {
+      sinon.stub(productsModel, 'editProduct').resolves([
+        { id: 1, name: 'produtoX' },
+      ]);
+
+      const response = await productsService.editProduct({ id: 1, name: 'produtoX'});
+
+      expect(response).to.deep.equal({
+        type: null,
+        message: [{ id: 1, name: 'produtoX' }],
+      });
+    });
+  });
 });
