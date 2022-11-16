@@ -76,4 +76,73 @@ describe('Testes de unidade do salesService', function () {
       });
     });
   });
+
+  describe('Testa a rota de devolver todas as vendas', function () {
+    it('Testa se é retornado tudo corretamente', async function () {
+      sinon.stub(salesModel, 'getAllSales').resolves(
+      [
+        {
+          "saleId": 1,
+          "productId": 1,
+          "quantity": 5,
+          "date": "2022-11-16T20:26:15.000Z"
+        },
+      ]);
+
+      const response = await salesService.getAllSales();
+
+      expect(response).to.deep.equal({
+        type: null,
+        message: [
+          {
+            "saleId": 1,
+            "productId": 1,
+            "quantity": 5,
+            "date": "2022-11-16T20:26:15.000Z"
+          },
+        ],
+      });
+    });
+  });
+
+  describe('Testa a rota de devolver a venda pelo id de busca', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa o retorno quando passado um id não existente', async function () {
+      sinon.stub(salesModel, 'getSaleById').resolves([]);
+
+      const response = await salesService.getSaleById(5);
+
+      expect(response).to.deep.equal({
+        type: 'NOT_FOUND',
+        message: 'Sale not found',
+      });
+    });
+
+    it('Testa o retorno quando passado um id existente', async function () {
+      sinon.stub(salesModel, 'getSaleById').resolves(
+        [
+          {
+            "date": "2022-11-16T20:26:15.000Z",
+            "productId": 3,
+            "quantity": 15,
+          },
+        ]);
+  
+      const response = await salesService.getSaleById(2);
+  
+      expect(response).to.deep.equal({
+        type: null,
+        message: [
+          {
+            "date": "2022-11-16T20:26:15.000Z",
+            "productId": 3,
+            "quantity": 15,
+          },
+        ],
+      });
+    });
+  });
 });
