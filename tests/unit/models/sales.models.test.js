@@ -103,4 +103,19 @@ describe('Testes de unidade do salesModel', function () {
       ]);
     });
   });
+
+  describe('Testa a rota de deletar uma venda', function () {
+    before(async function () {
+      sinon.stub(connection, 'execute').resolves({});
+    });
+
+    after(async function () {
+      connection.execute.restore();
+    });
+
+    it('Testa se é retornado com sucesso', async function () {
+      const response = await salesModel.deleteSale(1);
+      expect(response).to.deep.equal(1);
+    });
+  });
 });

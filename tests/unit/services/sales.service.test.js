@@ -145,4 +145,17 @@ describe('Testes de unidade do salesService', function () {
       });
     });
   });
+
+  describe('Testa a rota de deletar uma venda', function () {
+    it('Testa se é retornado corretamnete', async function () {
+      sinon.stub(salesModel, 'deleteSale').resolves(1);
+
+      const response = await salesService.deleteSale(1);
+
+      expect(response).to.deep.equal({
+        type: null,
+        message: 'Sale with id: 1 deleted sucefully',
+      });
+    });
+  });
 });

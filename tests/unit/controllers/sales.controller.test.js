@@ -188,4 +188,59 @@ describe('Testes de unidade do salesController', function () {
       ]);
     });
   });
+
+  describe('Testa a rota de deletar uma venda', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa se é retornado tudo corretamente', async function () {
+      const res = {};
+      const req = {
+        params: 1,
+      };
+  
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+  
+      sinon
+      .stub(salesService, 'getSaleById')
+      .resolves({});
+  
+      sinon
+      .stub(salesService, 'deleteSale')
+      .resolves({ type: null,
+        message: 'Sale with id: 1 deleted sucefully',
+      });
+  
+      await salesController.deleteSale(req, res);
+  
+      expect(res.status).to.have.been.calledWith(204);
+      expect(res.json).to.have.been.calledWith('Sale with id: 1 deleted sucefully');
+    });
+
+    it('Testa se é retornado erro ao passar um id não existente', async function () {
+      const res = {};
+      const req = {
+        params: 10,
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(salesService, 'getSaleById')
+      .resolves({ type: 'NOT_FOUND', message: 'Sale not found' });
+
+      sinon
+      .stub(salesService, 'deleteSale')
+      .resolves({});
+
+      await salesController.deleteSale(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith(
+        { message: 'Sale not found'});
+    });
+  });
 });
