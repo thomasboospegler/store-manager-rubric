@@ -118,4 +118,24 @@ describe('Testes de unidade do salesModel', function () {
       expect(response).to.deep.equal(1);
     });
   });
+
+  describe('Testa a rota de editar uma nova venda', function () {
+    before(async function () {
+      sinon.stub(connection, 'execute').resolves([{ insertId: 1 }]);
+    });
+
+    after(async function () {
+      connection.execute.restore();
+    });
+
+    it('Testa se é retornado com sucesso', async function () {
+      const response = await salesModel.editSale([
+        {
+          productId: 1,
+          quantity: 2,
+        },
+      ], 1);
+      expect(response).to.deep.equal(1);
+    });
+  });
 });

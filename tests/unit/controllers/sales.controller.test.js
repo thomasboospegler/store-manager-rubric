@@ -243,4 +243,115 @@ describe('Testes de unidade do salesController', function () {
         { message: 'Sale not found'});
     });
   });
+
+  describe('Testa a rota de editar uma venda', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa se retorna erro ao não passar o id do produto', async function () {
+      const res = {};
+      const req = {
+        params: 1,
+        body: [
+          {
+            quantity: 2,
+          },
+        ]
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(salesService, 'getSaleById')
+      .resolves({});
+
+      sinon
+      .stub(salesService, 'editSale')
+      .resolves({ type: 'INVALID_VALUES',
+        code: 400,
+        message: '"productId" is required' });
+
+      await salesController.edit(req, res);
+
+      expect(res.status).to.have.been.calledWith(400);
+      expect(res.json).to.have.been.calledWith(
+        { message: '"productId" is required'});
+    });
+
+    it('Testa se retorna tudo corretamente', async function () {
+      const res = {};
+      const req = {
+        params: 1,
+        body: [
+          {
+            productId: 1,
+            quantity: 2,
+          },
+        ]
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(salesService, 'getSaleById')
+      .resolves({});
+
+      sinon
+      .stub(salesService, 'editSale')
+      .resolves({ type: null, message: {
+        id: 1,
+        itemsSold: [
+          {
+            productId: 1,
+            quantity: 2,
+          },
+        ]
+      } });
+
+      await salesController.edit(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith({
+        id: 1,
+        itemsSold: [
+          {
+            productId: 1,
+            quantity: 2,
+          },
+        ]
+      })
+    });
+
+    it('Testa se retorna erro ao não encontrar a venda pelo id', async function () {
+      const res = {};
+      const req = {
+        params: 1,
+        body: [
+          {
+            quantity: 2,
+          },
+        ]
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(salesService, 'getSaleById')
+      .resolves({ type: 'NOT_FOUND', message: 'Sale not found' });
+
+      sinon
+      .stub(salesService, 'editSale')
+      .resolves({});
+
+      await salesController.edit(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith(
+        { message: 'Sale not found'});
+    });
+  });
 });
