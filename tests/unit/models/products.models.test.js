@@ -100,4 +100,29 @@ describe('Testes de unidade do productsModel', function () {
       expect(response).to.deep.equal(1);
     });
   });
+
+  describe('Testa a rota de devolver o produto pelo nome de busca', function () {
+    before(async function () {
+      sinon.stub(connection, 'execute').resolves(
+      [
+        [
+          { id: 1, name: 'Martelo de Thor' },
+        ]
+      ]);
+    });
+
+    after(async function () {
+      connection.execute.restore();
+    });
+
+    it('Testa o retorno quando passado um nome existente', async function () {
+      const response = await productsModel.getProductByName('Martelo');
+      expect(response).to.deep.equal([{ id: 1, name: 'Martelo de Thor' }]);
+    });
+
+    it('Testa o retorno quando passado um nome não existente', async function () {
+      const response = await productsModel.getProductByName('x');
+      expect(response).to.deep.equal([{ id: 1, name: 'Martelo de Thor' }]);
+    });
+  });
 });

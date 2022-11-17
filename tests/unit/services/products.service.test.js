@@ -125,4 +125,26 @@ describe('Testes de unidade do productsService', function () {
       });
     });
   });
+
+  describe('Testa a rota de devolver o produto pelo nome de busca', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa o retorno com sucesso', async function () {
+      sinon.stub(productsModel, 'getProductByName').resolves(
+        [
+        { id: 1, name: 'Martelo de Thor' },
+      ]);
+  
+      const response = await productsService.getProductByName('Martelo');
+  
+      expect(response).to.deep.equal({
+        type: null,
+        message: [
+          { id: 1, name: 'Martelo de Thor' },
+        ],
+      });
+    });
+  });
 });

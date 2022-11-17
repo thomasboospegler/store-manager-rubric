@@ -285,4 +285,43 @@ describe('Testes de unidade do productsController', function () {
         { message: 'Product not found'});
     });
   });
+
+  describe('Testa a rota de devolver o produto pelo nome de busca', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
+
+    it('Testa o retorno corretamente', async function () {
+      const res = {};
+      const req = {
+        query: {
+          q: 'Martelo',
+        }
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+      .stub(productsService, 'getProductByName')
+      .resolves({
+        message: [
+          {
+            id: 1,
+            name: 'Martelo de Thor',
+          },
+        ],
+      });
+
+      await productsController.search(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith([
+          {
+            id: 1,
+            name: 'Martelo de Thor',
+          },
+        ]);
+    });
+  });
 });
