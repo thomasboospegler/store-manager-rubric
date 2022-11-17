@@ -39,8 +39,14 @@ const createSale = async (reqBody) => {
   return { type: null, message: newSale };
 };
 
+const deleteSale = async (id) => {
+  await salesModel.deleteSale(id);
+  return { type: null, message: `Sale with id: ${id} deleted sucefully` };
+};
+
 module.exports = {
   createSale,
   getAllSales,
   getSaleById,
+  deleteSale,
 };

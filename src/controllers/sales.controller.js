@@ -23,8 +23,20 @@ const createSale = async (req, res) => {
   res.status(201).json(response.message);
 };
 
+const deleteSale = async (req, res) => {
+  const { id } = req.params;
+
+  const doesSaleExist = await salesService.getSaleById(id);
+  if (doesSaleExist.type) return res.status(404).json({ message: doesSaleExist.message });
+
+  const response = await salesService.deleteSale(id);
+
+  res.status(204).json(response.message);
+};
+
 module.exports = {
   createSale,
   getAll,
   getById,
+  deleteSale,
 };
