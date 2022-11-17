@@ -23,6 +23,19 @@ const createSale = async (req, res) => {
   res.status(201).json(response.message);
 };
 
+const edit = async (req, res) => {
+  const { id } = req.params;
+  const reqBody = req.body;
+
+  const doesSaleExist = await salesService.getSaleById(id);
+  if (doesSaleExist.type) return res.status(404).json({ message: doesSaleExist.message });
+
+  const response = await salesService.editSale(reqBody, id);
+  if (response.type) return res.status(response.code).json({ message: response.message });
+
+  res.status(200).json(response.message);
+};
+
 const deleteSale = async (req, res) => {
   const { id } = req.params;
 
@@ -38,5 +51,6 @@ module.exports = {
   createSale,
   getAll,
   getById,
+  edit,
   deleteSale,
 };

@@ -39,6 +39,32 @@ const createSale = async (reqBody) => {
   return { type: null, message: newSale };
 };
 
+const editSale = async (reqBody, id) => {
+  const allProducts = await productsModel.getAllProducts();
+
+  let error = {};
+  await reqBody.map(async (item) => {
+    const validateError = validateCreateSaleValues(item);
+    if (validateError.type) error = validateError;
+
+    const productIDExists = allProducts.find((product) => product.id === item.productId);
+    if (!productIDExists) {
+      error = { type: 'NOT_FOUND', code: 404, message: 'Product not found' };
+    }
+  });
+
+  if (error.type) return error;
+
+  const result = await salesModel.editSale(reqBody, id);
+
+  const newSale = {
+    saleId: result,
+    itemsUpdated: reqBody,
+  };
+
+  return { type: null, message: newSale };
+};
+
 const deleteSale = async (id) => {
   await salesModel.deleteSale(id);
   return { type: null, message: `Sale with id: ${id} deleted sucefully` };
@@ -49,4 +75,5 @@ module.exports = {
   getAllSales,
   getSaleById,
   deleteSale,
+  editSale,
 };

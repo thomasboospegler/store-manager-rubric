@@ -47,9 +47,21 @@ const deleteSale = async (id) => {
   return id;
 };
 
+const editSale = async (reqBody, id) => {
+  await connection.execute('DELETE FROM sales_products WHERE sale_id = ?', [id]);
+  reqBody.map(async ({ productId, quantity }) => {
+    await connection.execute(
+      'INSERT INTO sales_products (sale_id, product_id, quantity) VALUE (?, ?, ?)',
+      [id, productId, quantity],
+    );
+  });
+  return Number(id);
+};
+
 module.exports = {
   createSale,
   getAllSales,
   getSaleById,
   deleteSale,
+  editSale,
 };
