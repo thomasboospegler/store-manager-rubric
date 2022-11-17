@@ -14,6 +14,12 @@ const getById = async (req, res) => {
   res.status(200).json(response.message);
 };
 
+const search = async (req, res) => {
+  const { q: name } = req.query;
+  const response = await productsService.getProductByName(name);
+  res.status(200).json(response.message);
+};
+
 const create = async (req, res) => {
   const { name } = req.body;
 
@@ -51,6 +57,7 @@ const deleteProduct = async (req, res) => {
 module.exports = {
   getAll,
   getById,
+  search,
   create,
   edit,
   deleteProduct,

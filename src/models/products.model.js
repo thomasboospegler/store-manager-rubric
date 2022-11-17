@@ -16,6 +16,15 @@ const getProductById = async (productID) => {
   return camelize(result);
 };
 
+const getProductByName = async (name) => {
+  const allProducts = await getAllProducts();
+  const productsFilteredByName = allProducts.filter((product) => product.name.includes(name));
+  
+  if (!productsFilteredByName.length) return allProducts;
+
+  return productsFilteredByName;
+};
+
 const insertProduct = async (name) => {
   const [{ insertId }] = await connection.execute(
     'INSERT INTO products (name) VALUE (?)',
@@ -43,6 +52,7 @@ const deleteProduct = async (id) => {
 module.exports = {
   getAllProducts,
   getProductById,
+  getProductByName,
   insertProduct,
   editProduct,
   deleteProduct,
