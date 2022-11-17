@@ -44,8 +44,8 @@ const editSale = async (reqBody, id) => {
 
   let error = {};
   await reqBody.map(async (item) => {
-    const validateError = validateCreateSaleValues(item);
-    if (validateError.type) error = validateError;
+    const validate = validateCreateSaleValues(item);
+    if (validate.type) error = validate;
 
     const productIDExists = allProducts.find((product) => product.id === item.productId);
     if (!productIDExists) {
